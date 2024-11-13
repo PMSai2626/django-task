@@ -1,0 +1,26 @@
+<h1>Feed</h1>
+<form method="POST" action="{% url 'post_message' %}">
+    {% csrf_token %}
+    <textarea name="content"></textarea>
+    <button type="submit">Post</button>
+</form>
+
+{% for message in messages %}
+    <div>
+        <p>{{ message.user.username }}: {{ message.content }}</p>
+        <form method="POST" action="{% url 'delete_message' message.id %}">
+            {% csrf_token %}
+            <button type="submit">Delete</button>
+        </form>
+        <form method="POST" action="{% url 'post_comment' message.id %}">
+            {% csrf_token %}
+            <textarea name="content"></textarea>
+            <button type="submit">Comment</button>
+        </form>
+        <a href="{% url 'like_message' message.id %}">Like</a>
+        {% for comment in message.comments.all %}
+            <p>{{ comment.user.username }}: {{ comment.content }}</p>
+            <a href="{% url 'like_comment' comment.id %}">Like</a>
+        {% endfor %}
+    </div>
+{% endfor %}
